@@ -1,0 +1,24 @@
+@code_type c .c
+@comment_type /* %s */
+@compiler lit -t benchmarks.lit && gcc benchmarks.c && rm a.out
+
+@title Minimize Graphical Applications Memory - Benchmarks
+
+@s Purpose of the Benchmarks
+
+In the past people said 64kb of RAM was enough to do anything. Today we use almost 2GB of RAM just to have our machine running. Programmers keep making each program bigger than the old ones, like all the machines have 64GB of RAM. This leads to the need of constantly getting new hardware, because it looks like our machines are getting slower over time. But the main problem is that the programs are more **inefficient**! 
+
+
+Even systems like ubuntu desktop and kubuntu still take between 700MB to 1GB of RAM to be up and running. Its a huge difference if we compare it with something like a basic install of an OpenBSD server, which takes only 20MB of RAM. Of course this comparison is not fair, we are comparing a server which has a command line interface against a distro with a full desktop environment. But if that is the main diffence that makes the system use 35x more RAM, we must try to reduce as much as we can.
+
+
+So the focus of this text will be to create a benchmark on the multiple available graphical stacks so we can understand better what exists, and how we could reduce RAM usage to get better and more durable systems.
+
+@s Classification Parameters
+
+@s Graphical Stacks to Test
+
+Most `Literate` programs share a common structure. It’s probably a good idea to state 
+the overall structure explicitly at the outset, even though the various parts could all be 
+introduced in a piecemeal fashion.
+
