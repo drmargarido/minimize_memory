@@ -1,8 +1,8 @@
-@title Minimize Graphical Applications RAM
+@add_css custom.css
 
 @s Purpose of the Benchmarks
 
-In the past people said 64kb of RAM was enough to do anything. Today we use almost 2GB of RAM just to have our machine running. Programmers keep making each program bigger than the old ones, like all the machines have 64GB of RAM. This leads to the need of constantly getting new hardware, because it looks like our machines are getting slower over time. But the main problem is that the programs are more **inefficient**! 
+In the past people said 64kb of RAM was enough to do anything. Today we use almost 2GB of RAM just to have our machine running. Programmers keep making each program bigger than the old ones, like all the machines have 64GB of RAM. This leads to the need of constantly getting new hardware, because it looks like our machines are getting slower over time. But the main problem is that the programs are more **inefficient**!
 
 <br/>
 Even systems like ubuntu desktop and kubuntu still take between 700MB to 1GB of RAM to be up and running. Its a huge difference if we compare it with something like a basic install of an OpenBSD server, which takes only 20MB of RAM. Of course this comparison is not fair, we are comparing a server which has a command line interface against a distro with a full desktop environment. But if that is the main diffence that makes the system use 35x more RAM, we must try to reduce as much as we can.
@@ -28,7 +28,7 @@ Now I present the code and structure for these scripts:
 ## Remember
 The objective of the remember script is to allow me to just type `remember 'Found cool tech - www.tec.com'` and store the note.
 
-</br>
+<br />
 It receives a string and stores it in a file. If the user does not supply any argument, the program will wait for the user input and will store the note when Ctrl + D is pressed.
 --- remember.sh
 #!/bin/bash
@@ -57,7 +57,7 @@ It verifies if the rememberfile already exists and displays a warning if not. If
 --- remindme.sh
 #!/bin/bash
 
-# remindme -- Searches a data file for matching lines or, 
+# remindme -- Searches a data file for matching lines or,
 # if no argument is specified, shows the entire contents of the data file
 
 @{Remember File}
@@ -82,7 +82,7 @@ exit 0
 The remember file will be an hidden file called .remember in the current user personal directory.
 
 --- Remember File
-rememberfile="$HOME/.remember" 
+rememberfile="$HOME/.remember"
 ---
 
 Validation to check if no arguments were received.
@@ -95,8 +95,12 @@ if [ $# -eq 0 ] ; then
 In order to have the same base for each test we need to define the needed features for each program and what will be evaluated.
 
 <br/>
-Since each pixel will occupy memory we will set the application window to a fixed size of 400x300. The application must have an input field to receive the notes, one button to submit them and a list area to display the results like in the following mockup. ![UI Mockup](https://octodex.github.com/images/yaktocat.png)
+Since each pixel will occupy memory we will set the application window to a fixed size of 400x300. The application must have an input field to receive the notes, one button to submit them, a table list area to display the results and a search input to filter the list results for the current text in the search box. We can observe this structure in the following mockup. 
+<br/>
 
+![UI Mockup](images/notes_mockup.png)
+
+<br/>
 * Parametros de avaliação:
     + Utilização de memória RAM
     + Simplicidade de implementação
@@ -104,7 +108,7 @@ Since each pixel will occupy memory we will set the application window to a fixe
 
 @s Graphical Stacks
 
-Most `Literate` programs share a common structure. It’s probably a good idea to state 
-the overall structure explicitly at the outset, even though the various parts could all be 
+Most `Literate` programs share a common structure. It’s probably a good idea to state
+the overall structure explicitly at the outset, even though the various parts could all be
 introduced in a piecemeal fashion.
 
