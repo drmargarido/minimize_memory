@@ -1,5 +1,6 @@
 all:
 	mkdir -p build
+	mkdir -p build/gtk
 	cp -R images build/
 	literate/./lit benchmarks.lit --out-dir build/
 
