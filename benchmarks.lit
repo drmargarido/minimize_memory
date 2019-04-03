@@ -141,6 +141,8 @@ Since we want to see the real memory usage of each graphical stack we will try t
 Base structure for the benchmarks.
 --- Benchmark Structure
 @{Measure Includes}
+@{Insert Note}
+@{Search Notes}
 
 int main (int argc, char **argv){
   int status = 0;
@@ -148,6 +150,15 @@ int main (int argc, char **argv){
   @{Measure Memory}
   return status;
 }
+---
+
+In order to register notes from the program we need to pass the received text to the batch file.
+--- Insert Note
+system("remember %s");
+---
+
+--- Search Notes
+system("remindme %s");
 ---
 
 Since most of the tests will be done in a Linux environment, to get the current process memory we can read the /proc/self/status file, where self is a link to the current process. This will give us the memory in kB.
@@ -241,14 +252,14 @@ g_object_unref (app);
 Now we start building the window according to the specified mockup. The two main areas of the window are the place to insert new notes and the area to filter and display them.
 
 --- GTK Window Construction
-@{Button Callback}
+GtkWidget * insert_text;
+@{Insert Button Callback}
 
 static void activate (GtkApplication* app, gpointer user_data){
   GtkWidget * window;
   GtkWidget * main_box;
 
   GtkWidget * insert_button;
-  GtkWidget * insert_text;
   GtkWidget * insert_box;
   GtkWidget * insert_label;
 
@@ -305,10 +316,19 @@ static void activate (GtkApplication* app, gpointer user_data){
 }
 ---
 
---- Button Callback
+--- Insert Button Callback
 static void print_hello (GtkWidget *widget, gpointer data){
   g_print ("Hello World\n");
+  gchar * text;
+  text = gtk_entry_get_text (GTK_ENTRY (insert_text));
+  @{Call Note Insertion}
+  g_print ("%s\n", text);
 }
+---
+
+
+--- Call Note Insertion
+system(SHELLSCRIPT);
 ---
 
 In order to compile this code we can use the pkg-config to import the gtk3 dependencies.
