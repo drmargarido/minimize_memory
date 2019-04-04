@@ -1,5 +1,6 @@
 @add_css custom.css
 @title Reduce Graphical RAM
+@compiler make
 
 @s Purpose of the Benchmarks
 
@@ -141,8 +142,7 @@ Since we want to see the real memory usage of each graphical stack we will try t
 Base structure for the benchmarks.
 --- Benchmark Structure
 @{Measure Includes}
-@{Insert Note}
-@{Search Notes}
+@{Constants}
 
 int main (int argc, char **argv){
   int status = 0;
@@ -152,13 +152,10 @@ int main (int argc, char **argv){
 }
 ---
 
-In order to register notes from the program we need to pass the received text to the batch file.
---- Insert Note
-system("remember %s");
----
-
---- Search Notes
-system("remindme %s");
+In order to register notes from the program we need to pass the received text to the bash file. To know the max size of a note that we are allowed to send we set here the note size limit to 512 characters. We will make the command size double the note because when we are escaping we will add extra chars.
+--- Constants
+#define NOTE_SIZE 512
+#define COMMAND_SIZE (NOTE_SIZE*2)
 ---
 
 Since most of the tests will be done in a Linux environment, to get the current process memory we can read the /proc/self/status file, where self is a link to the current process. This will give us the memory in kB.
@@ -202,7 +199,62 @@ printf("peakRealMem: %d \n", peakRealMem);
 ---
 
 
-In order to be able to grab the current process memory we need to have the following libraries.
+To make the call to the bash file from C, and since in this case we don't need the output, we can use the system function. Before calling the system function we escape the received input and then concatenate it with the remember command.
+
+--- Insert Note
+@{Escape Text}
+
+char command[COMMAND_SIZE] = "";
+sprintf(command, "remember \"%s\"", escaped_text);
+int result = system(command);
+---
+
+--- Search Notes
+@{Escape Text}
+
+FILE *fp;
+char current_note[NOTE_SIZE];
+
+/* Open the command for reading. */
+fp = popen("remindme", escaped_text);
+if (fp == NULL) {
+  printf("Failed to run command\n" );
+  exit(1);
+}
+
+/* Read the output a line at a time - output it. */
+while (fgets(current_note, sizeof(current_note)-1, fp) != NULL) {
+  @{Display Note}
+}
+
+/* close */
+pclose(fp);
+---
+
+To prevent exceeding the max note size we trim the exceeding chars from the received text. To prevent command injections we escape the `"` character which we will be using as delimiter of the commands arguments with `\"` and the we escape the `\` character which will be used for escaping with `\\`.
+
+--- Escape Text
+char escaped_text[COMMAND_SIZE] = "";
+
+if(strlen(text) >= (NOTE_SIZE - 10)){
+	text[(NOTE_SIZE - 12)] = '\0';
+}
+
+int offset = 0;
+for(int i=0; text[i] != '\0'; i++){
+	switch(text[i]){
+    case '"':
+    case '\\':
+  		escaped_text[i + offset] = '\\';
+  		offset++;
+	}
+	
+	escaped_text[i + offset] = text[i];
+}
+---
+
+
+In order to be able to grab the current process memory, to use the system function and to be able to use the string manipulation functionalities we need the following libraries.
 --- Measure Includes
 #include <stdio.h>
 #include <stdlib.h>
@@ -214,13 +266,21 @@ In order to be able to grab the current process memory we need to have the follo
 ---
 
 
+--- Display Note
+---
+
 @s GTK
+
+
+### Implementation
 
 The main organization of the gtk test is the following.
 
 --- gtk/main.c
-@{Includes}
 @{Measure Includes}
+@{GTK Includes}
+
+@{Constants}
 
 @{GTK Window Construction}
 
@@ -234,7 +294,7 @@ int main (int argc, char **argv){
 
 To be able to use the gtk features we need the gtk.h header file.
 
---- Includes
+--- GTK Includes
 #include <gtk/gtk.h>
 ---
 
@@ -249,87 +309,126 @@ status = g_application_run (G_APPLICATION (app), argc, argv);
 g_object_unref (app);
 ---
 
-Now we start building the window according to the specified mockup. The two main areas of the window are the place to insert new notes and the area to filter and display them.
+
+Here we have the main structure for building the window according to the specified mockup.
 
 --- GTK Window Construction
 GtkWidget * insert_text;
+GtkWidget * search_list;
+GtkWidget * search_text;
+
 @{Insert Button Callback}
+@{Search Changed Callback}
 
 static void activate (GtkApplication* app, gpointer user_data){
-  GtkWidget * window;
-  GtkWidget * main_box;
+  @{Widgets Declaration}
+  @{Layout Organization}
 
-  GtkWidget * insert_button;
-  GtkWidget * insert_box;
-  GtkWidget * insert_label;
-
-  GtkWidget * search_text;
-  GtkWidget * search_list;
-  GtkWidget * search_label;
-  GtkWidget * search_box;
-
-  // create window
-  window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "Notes Reminder");
-  gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
-  
-  // create containing boxes
-  main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
-
-  insert_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (insert_box), GTK_BUTTONBOX_SPREAD);
-  
-  search_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
-  gtk_widget_set_margin_start (search_box, 10);
-  gtk_widget_set_margin_end (search_box, 10);
-  
-  gtk_container_add(GTK_CONTAINER (window), main_box);
-
-  // Insert Widgets
-  insert_label = gtk_label_new ("Create New");
-  insert_button = gtk_button_new_with_label("Insert");
-  insert_text = gtk_entry_new ();
-  g_signal_connect(insert_button, "clicked", G_CALLBACK (print_hello), NULL);
-  g_signal_connect_swapped(insert_button, "clicked", G_CALLBACK (gtk_widget_destroy), window);
- 
-  // Search Widgets
-  search_text = gtk_entry_new ();
-  search_label = gtk_label_new ("Search");
-  search_list = gtk_list_box_new ();
-  gtk_list_box_insert (GTK_LIST_BOX (search_list), gtk_label_new("Teste"), 0);
-  gtk_list_box_insert (GTK_LIST_BOX (search_list), gtk_label_new("Teste"), 0);
-  
-
-  // Fill the containers
-  gtk_container_add(GTK_CONTAINER (main_box), insert_label);
-  
-  gtk_container_add(GTK_CONTAINER (main_box), insert_box);
-  gtk_container_add(GTK_CONTAINER (insert_box), insert_text);
-  gtk_container_add(GTK_CONTAINER (insert_box), insert_button);
-  
-  gtk_container_add(GTK_CONTAINER (main_box), search_box);
-  gtk_container_add(GTK_CONTAINER (search_box), search_label);
-  gtk_container_add(GTK_CONTAINER (search_box), search_text);
-  gtk_container_add(GTK_CONTAINER (search_box), search_list);
+  @{Widgets Initialization}
+  @{Widgets Packing}
 
   gtk_widget_show_all (window);
 }
 ---
 
+The two main areas of the window are the place to insert new notes and the area to filter and display them. Here we declare the widgets variables. The components in the GTK stack are all based from GTKWidget.
+
+--- Widgets Declaration
+GtkWidget * window;
+GtkWidget * main_box;
+
+GtkWidget * insert_button;
+GtkWidget * insert_box;
+GtkWidget * insert_label;
+
+GtkWidget * search_label;
+GtkWidget * search_box;
+---
+
+Here we create the window with the title "Notes Reminder" and set the size to 400x300 as specified before. After that the main areas of the interface layout are created and their margins and spacings are defined.
+
+--- Layout Organization
+// create window
+window = gtk_application_window_new (app);
+gtk_window_set_title (GTK_WINDOW (window), "Notes Reminder");
+gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
+
+// create containing boxes
+main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+
+insert_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
+gtk_button_box_set_layout (GTK_BUTTON_BOX (insert_box), GTK_BUTTONBOX_SPREAD);
+
+search_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
+gtk_widget_set_margin_start (search_box, 10);
+gtk_widget_set_margin_end (search_box, 10);
+
+gtk_container_add(GTK_CONTAINER (window), main_box);
+---
+
+With the layout defined now we instantiate the widgets the be used. We register the callback for the note insertion and the callback of the note search that will fill the note results list.
+
+--- Widgets Initialization
+// Insert Widgets
+insert_label = gtk_label_new ("Create New");
+insert_button = gtk_button_new_with_label("Insert");
+insert_text = gtk_entry_new ();
+g_signal_connect(insert_button, "clicked", G_CALLBACK (insert_clicked), NULL);
+
+// Search Widgets
+search_text = gtk_search_entry_new ();
+search_label = gtk_label_new ("Search");
+search_list = gtk_list_box_new ();
+g_signal_connect(search_text, "search-changed", G_CALLBACK (search_changed), NULL);
+gtk_container_add (GTK_CONTAINER (search_list), gtk_label_new("Teste"));
+gtk_container_add (GTK_CONTAINER (search_list), gtk_label_new("Teste"));
+---
+
+With the widgets instantiated we pack them into the layout widgets we set up before.
+
+--- Widgets Packing
+// Fill the containers
+gtk_container_add(GTK_CONTAINER (main_box), insert_label);
+
+gtk_container_add(GTK_CONTAINER (main_box), insert_box);
+gtk_container_add(GTK_CONTAINER (insert_box), insert_text);
+gtk_container_add(GTK_CONTAINER (insert_box), insert_button);
+
+gtk_container_add(GTK_CONTAINER (main_box), search_box);
+gtk_container_add(GTK_CONTAINER (search_box), search_label);
+gtk_container_add(GTK_CONTAINER (search_box), search_text);
+gtk_container_add(GTK_CONTAINER (search_box), search_list);
+---
+
+After we have text in the text field to insert new notes and we click the `Insert` button we want the text to be added to our notes database. If there is no text in the text field we can ignore the button click. If there is text and the note was inserted we want to clear the text box so we can add other new notes.
+
 --- Insert Button Callback
-static void print_hello (GtkWidget *widget, gpointer data){
-  g_print ("Hello World\n");
-  gchar * text;
-  text = gtk_entry_get_text (GTK_ENTRY (insert_text));
-  @{Call Note Insertion}
-  g_print ("%s\n", text);
+static void insert_clicked (GtkWidget *widget, gpointer data){
+  guint16 text_length = gtk_entry_get_text_length (GTK_ENTRY (insert_text));
+  if(text_length != 0){
+	  gchar * text;
+	  text = gtk_entry_get_text (GTK_ENTRY (insert_text));
+
+    @{Insert Note}
+
+    if(result == 0){
+      gtk_entry_set_text (GTK_ENTRY (insert_text), "");
+    }
+  }
 }
 ---
 
+--- Search Changed Callback
+static void search_changed (GtkWidget *widget, gpointer data){
+	gchar * text;
+	text = gtk_entry_get_text (GTK_ENTRY (search_text));
+	
+  gtk_container_foreach(GTK_CONTAINER (search_list), gtk_widget_destroy, NULL);
 
---- Call Note Insertion
-system(SHELLSCRIPT);
+  @{Search Notes}
+}
 ---
+
 
 In order to compile this code we can use the pkg-config to import the gtk3 dependencies.
 
@@ -338,3 +437,5 @@ all:
 	gcc `pkg-config --cflags gtk+-3.0` -o main main.c `pkg-config --libs gtk+-3.0`
 ---
 
+
+### Results
