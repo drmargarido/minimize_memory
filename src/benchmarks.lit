@@ -1,0 +1,188 @@
+@add_css css/custom.css
+@compiler make
+@code_type c .c
+
+@s How to Test
+
+In order to have the same base for each test we need to define the needed features for each program and what will be evaluated.
+
+<br/>
+Since each pixel will occupy memory, the application window will be set to a fixed size of 400x300. The application must have an input field to receive the notes, one button to submit them, a table list area to display the results and a search input to filter the list results for the current text in the search box. We can observe this structure in the following mockup. 
+<br/>
+
+![UI Mockup](images/notes_mockup.png)
+
+<br/>
+For each application we will measure:
+* RAM Usage when open
+* Implementation Dificulty
+* Supported Platforms
+
+@s Graphical Stacks
+
+With the benchmark methodology already defined now we need to select the graphical stacks to be tested and compared.
+
+<br/>
+First we will check the common more feature full graphical stacks which are used in most of the systems:
+* GTK
+* QT
+* .NET
+
+<br/>
+Then try the more lightweight alternatives:
+* Enlightment
+* FLTK
+* tk
+* motif
+* SDL?
+* IUP
+* Tekui
+
+<br/>
+Finally use directly the system API's:
+* Win32
+* X.org
+* Wayland
+
+# Start of the Benchmarks
+
+@s Measuring Memory
+Since we want to see the real memory usage of each graphical stack we will try to make most of the implementations using a compiled language without the overhead of any VM. So we will use C or C++ for measuring the memory and for the graphical implementation. If a scripting language is needed for any case, we will chose Lua for that since its VM is really small, between 400kb and 800kb.
+
+<br/>
+Base structure for the benchmarks.
+--- Benchmark Structure
+@{Includes}
+@{Constants}
+
+@{Window Construction}
+
+int main (int argc, char **argv){
+  int status = 0;
+  @{Graphical Initialization}
+  @{Measure Memory}
+  return status;
+}
+---
+
+In order to register notes from the program we need to pass the received text to the bash file. To know the max size of a note that we are allowed to send we set here the note size limit to 512 characters. We will make the command size double the note because when we are escaping we will add extra chars.
+--- Constants
+#define NOTE_SIZE 512
+#define COMMAND_SIZE (NOTE_SIZE*2)
+---
+
+Since most of the tests will be done in a Linux environment, to get the current process memory we can read the /proc/self/status file, where self is a link to the current process. This will give us the memory in kB.
+
+--- Measure Memory
+/* The current (and peak) real memory in kB */
+int currRealMem;
+int peakRealMem;
+
+// stores each word in status file
+char buffer[1024] = "";
+
+// linux file contains this-process info
+FILE* file = fopen("/proc/self/status", "r");
+
+@{Parse Memory File}
+fclose(file);
+
+@{Report Memory}
+---
+
+To read the memory this way we need to parse the proc file and detect the type of memory we are reading. We only want the real memory so we will not parse the virtual memory usage.
+
+--- Parse Memory File
+// read the entire file
+while (fscanf(file, " %1023s", buffer) == 1) {
+    if (strcmp(buffer, "VmRSS:") == 0) {
+        fscanf(file, " %d", &currRealMem);
+    }
+    if (strcmp(buffer, "VmHWM:") == 0) {
+        fscanf(file, " %d", &peakRealMem);
+    }
+}
+---
+
+After reading the memory we want to report it so we can store the values when testing.
+
+--- Report Memory
+printf("currRealMem: %d \n", currRealMem);
+printf("peakRealMem: %d \n", peakRealMem);
+---
+
+
+To make the call to the bash file from C, and since in this case we don't need the output, we can use the system function. Before calling the system function we escape the received input and then concatenate it with the remember command.
+
+--- Insert Note
+@{Escape Text}
+
+char command[COMMAND_SIZE] = "";
+sprintf(command, "remember \"%s\"", escaped_text);
+int result = system(command);
+---
+
+--- Search Notes
+@{Escape Text}
+
+FILE *fp;
+char current_note[NOTE_SIZE];
+
+/* Open the command for reading. */
+char command[COMMAND_SIZE] = "";
+sprintf(command, "remindme \"%s\"", escaped_text);
+
+fp = popen(command, "r");
+if (fp == NULL) {
+  printf("Failed to run command\n" );
+  exit(1);
+}
+
+/* Read the output a line at a time - output it. */
+while (fgets(current_note, sizeof(current_note)-1, fp) != NULL) {
+  @{Display Note}
+}
+
+/* close */
+pclose(fp);
+---
+
+To prevent exceeding the max note size we trim the exceeding chars from the received text. To prevent command injections we escape the `"` character which we will be using as delimiter of the commands arguments with `\"` and the we escape the `\` character which will be used for escaping with `\\`.
+
+--- Escape Text
+char escaped_text[COMMAND_SIZE] = "";
+
+if(strlen(text) >= (NOTE_SIZE - 10)){
+	text[(NOTE_SIZE - 12)] = '\0';
+}
+
+int offset = 0;
+for(int i=0; text[i] != '\0'; i++){
+	switch(text[i]){
+    case '"':
+    case '\\':
+  		escaped_text[i + offset] = '\\';
+  		offset++;
+	}
+	
+	escaped_text[i + offset] = text[i];
+}
+---
+
+
+In order to be able to grab the current process memory, to use the system function and to be able to use the string manipulation functionalities we need the following libraries.
+--- Includes
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+---
+
+
+--- Graphical Initialization --- noWeave
+---
+
+--- Display Note --- noWeave
+---
+
+--- Window Construction --- noWeave
+---

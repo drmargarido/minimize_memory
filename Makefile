@@ -1,8 +1,9 @@
 all:
 	mkdir -p build
 	mkdir -p build/gtk
-	cp -R images build/
-	literate/./lit benchmarks.lit --out-dir build/
+	literate/./lit src/main.lit --out-dir build/
+	cp -R images build/_book/
+	cd build/gtk/ && make
 
 presentation:
 	mkdir -p presentation

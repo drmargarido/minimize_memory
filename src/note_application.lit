@@ -1,0 +1,80 @@
+@code_type shell .sh
+
+# Note Taking Application
+@s What to Test
+
+I have bad memory, so usually when I find something nice I write it in some note taking app. But I don't like needing to have some app open that I'm not using most of the time and when searching most of the note apps are not good to search by keyword.
+
+<br/>
+So last year I implemented two simple shell scripts one to remember a note(remember) and another to search for some keyword in all my notes(remindme).
+
+<br />
+We will be using these scripts as backend so the UIs that will be implement only need to have their necessary UI construction code.
+
+<br />
+Now I present the code and structure for these scripts:
+## Remember
+The objective of the remember script is to allow me to just type `remember 'Found cool tech - www.tec.com'` and store the note.
+
+<br />
+It receives a string and stores it in a file. If the user does not supply any argument, the program will wait for the user input and will store the note when Ctrl + D is pressed.
+--- remember.sh
+#!/bin/bash
+# remember -- An easy command line based reminder pad
+
+@{Remember File}
+
+@{If No Arguments}
+    # Prompt the user for input and append to the rememberfile whatever they wrote.
+    echo "Enter note, end with ^D: "
+    cat - >> $rememberfile
+else
+    # Send any arguments passed to the script into the remeberfile.
+    echo $@ >> $rememberfile
+fi
+
+exit 0
+---
+
+## Remindme
+The objective of the remindme command is to filter and display notes taken with the remember command.
+
+<br />
+It verifies if the rememberfile already exists and displays a warning if not. If the user passed arguments when calling the script it will filter lines in the remember file according to the keywords. If no arguments were passed it displays all the file.
+
+--- remindme.sh
+#!/bin/bash
+
+# remindme -- Searches a data file for matching lines or,
+# if no argument is specified, shows the entire contents of the data file
+
+@{Remember File}
+
+if [ ! -f $rememberfile ] ; then
+    echo "$0: You don't seem to have a .remember file." >&2
+    echo "To remedy this, please use 'remember' to add reminders" >&2
+    exit 1
+fi
+
+@{If No Arguments}
+    # Display the whole rememberfile when not given any search criteria.
+    more $rememberfile
+else
+    # Otherwise, search through the file for the given terms, and display the results neatly
+    grep -i -- "$@" $rememberfile | ${PAGER:-more}
+fi
+
+exit 0
+---
+
+The remember file will be an hidden file called .remember in the current user personal directory.
+
+--- Remember File
+rememberfile="$HOME/.remember"
+---
+
+Validation to check if no arguments were received.
+--- If No Arguments
+if [ $# -eq 0 ] ; then
+---
+
