@@ -54,6 +54,7 @@ Base structure for the benchmarks.
 --- Benchmark Structure
 @{Includes}
 @{Constants}
+@{Globals}
 
 @{Window Construction}
 
@@ -177,6 +178,10 @@ In order to be able to grab the current process memory, to use the system functi
 #include <string.h>
 ---
 
+The `@{Globals}`, `@{Graphical Initialization}`, `@{Display Note}` and `@{Window Construction}` will be implemented in each benchmark.
+
+--- Globals --- noWeave
+---
 
 --- Graphical Initialization --- noWeave
 ---

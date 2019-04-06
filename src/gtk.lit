@@ -2,19 +2,18 @@
 
 @s GTK Implementation
 
-The main organization of the gtk test is the following.
-
---- gtk/main.c
+--- gtk/main.c --- noWeave
 @{Benchmark Structure}
 ---
 
+The gtk implementation uses the base benchamark structure.
 To be able to use the gtk features we need the gtk.h header file.
 
 --- Includes +=
 #include <gtk/gtk.h>
 ---
 
-Now we do the initialization of the GTK app. Since this is a benchmark we will leave "org.gtk.example" as the identifier.
+Since this is a benchmark we will leave "org.gtk.example" as the identifier. To initialize the application we register a callback to build the window and then start the application by passing the received command line arguments.
 
 --- Graphical Initialization
 GtkApplication *app;
@@ -29,11 +28,6 @@ g_object_unref (app);
 Here we have the main structure for building the window according to the specified mockup.
 
 --- Window Construction
-GtkWidget * window;
-GtkWidget * insert_text;
-GtkWidget * search_list;
-GtkWidget * search_text;
-
 @{Insert Button Callback}
 @{Search Changed Callback}
 
@@ -59,9 +53,22 @@ GtkWidget * insert_label;
 
 GtkWidget * search_label;
 GtkWidget * search_box;
+GtkWidget * search_scroll;
 ---
 
-Here we create the window with the title "Notes Reminder" and set the size to 400x300 as specified before. After that the main areas of the interface layout are created and their margins and spacings are defined.
+Since we need to access the insert box, the search list and the search text from their callback functions we will make them globals.
+
+--- Globals
+GtkWidget * window;
+GtkWidget * insert_text;
+GtkWidget * search_list;
+GtkWidget * search_text;
+---
+
+Here we create the window with the title "Notes Reminder" and set the size to 400x300 as specified before. After that, the main areas of the interface layout are created and their margins and spacings are defined.
+
+<br />
+To make the list with the notes be scrolable and not expand infinitely we create a scrolled window and put the search box inside it.
 
 --- Layout Organization
 // create window
@@ -72,17 +79,29 @@ gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
 // create containing boxes
 main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
 
+// Insert Box
 insert_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 gtk_button_box_set_layout (GTK_BUTTON_BOX (insert_box), GTK_BUTTONBOX_SPREAD);
 
+// Search Box
 search_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 15);
 gtk_widget_set_margin_start (search_box, 10);
 gtk_widget_set_margin_end (search_box, 10);
 
+// Scroll Window
+search_scroll = gtk_scrolled_window_new (NULL, NULL);
+gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW (search_scroll), 120);
+
 gtk_container_add(GTK_CONTAINER (window), main_box);
 ---
 
-With the layout defined now we instantiate the widgets the be used. We register the callback for the note insertion and the callback of the note search that will fill the note results list.
+With the layout defined now we instantiate the widgets that will be used. We register the callback for the note insertion when the insert button is clicked and the callback of the note search that will fill the search results in the listbox when new text is written. 
+
+<br />
+The `search-changed` event doesn't trigger instantly after each change, so it was chosen to be used in the search field instead of a keypress event because it would make the refreshing of the list look like flickering. 
+
+<br />
+Since the list starts empty, we make an initial search with a blank text string which will match all the notes in the `.remember` file.
 
 --- Widgets Initialization
 // Insert Widgets
@@ -96,7 +115,9 @@ search_text = gtk_search_entry_new ();
 search_label = gtk_label_new ("Search");
 search_list = gtk_list_box_new ();
 g_signal_connect(search_text, "search-changed", G_CALLBACK (search_changed), NULL);
-gtk_container_add (GTK_CONTAINER (search_list), gtk_label_new("Teste"));
+
+gchar * text = "";
+@{Search Notes}
 ---
 
 With the widgets instantiated we pack them into the layout widgets we set up before.
@@ -112,7 +133,8 @@ gtk_container_add(GTK_CONTAINER (insert_box), insert_button);
 gtk_container_add(GTK_CONTAINER (main_box), search_box);
 gtk_container_add(GTK_CONTAINER (search_box), search_label);
 gtk_container_add(GTK_CONTAINER (search_box), search_text);
-gtk_container_add(GTK_CONTAINER (search_box), search_list);
+gtk_container_add(GTK_CONTAINER (search_scroll), search_list);
+gtk_container_add(GTK_CONTAINER (search_box), search_scroll);
 ---
 
 After we have text in the text field to insert new notes and we click the `Insert` button we want the text to be added to our notes database. If there is no text in the text field we can ignore the button click. If there is text and the note was inserted we want to clear the text box so we can add other new notes.
@@ -133,10 +155,15 @@ static void insert_clicked (GtkWidget *widget, gpointer data){
 }
 ---
 
+When the text in the notes search field changes we want to update the notes list. To do this when a change is detected in the search field we clear the list, query the remember text field with our new query and insert the results in the list.
+
+<br />
+Since we instantiated new GtkWidgets and added them to the list. We need to tell the window to show all the new widgets.
+
 --- Search Changed Callback
 static void search_changed (GtkWidget *widget, gpointer data){
-	gchar * text;
-	text = gtk_entry_get_text (GTK_ENTRY (search_text));
+  gchar * text;
+  text = gtk_entry_get_text (GTK_ENTRY (search_text));
 	
   gtk_container_foreach(GTK_CONTAINER (search_list), gtk_widget_destroy, NULL);
 
@@ -146,8 +173,12 @@ static void search_changed (GtkWidget *widget, gpointer data){
 }
 ---
 
+For each of the results of the note search in the text file we will build a `GtkLabel` element, make its appear with '...' at the end if needed to fit in the current window and add it to the notes list.
+
 --- Display Note
-gtk_container_add (GTK_CONTAINER (search_list), gtk_label_new(current_note));
+GtkWidget * label = gtk_label_new(current_note);
+gtk_label_set_ellipsize(GTK_LABEL (label), PANGO_ELLIPSIZE_END);
+gtk_container_add (GTK_CONTAINER (search_list), label);
 ---
 
 In order to compile this code we can use the pkg-config to import the gtk3 dependencies.
@@ -159,5 +190,21 @@ clean:
 	rm main
 ---
 
-
 @s Results
+
+### Obtained Interface
+<br />
+![GTK Notes](images/gtk_notes.png)
+
+<br />
+![GTK Notes Search](images/gtk_notes2.png)
+
+### Evaluation
+<br />
+**RAM Usage** - 26.54MB
+
+<br />
+**Implementation Dificulty** - All the widgets are based on the GtkWidget which allows fastly understand how they can be used. Their documentation is good and this implemented was done just with the help of their reference manual. The code implementation gave us full control of the implementaiton, but we could use the [glade](https://glade.gnome.org/) tool which allows us to drag and drop most of the gtk components to build the UI.
+
+<br />
+**Supported Platforms** - GNU/Linux, Unix, Windows and Mac OS X
