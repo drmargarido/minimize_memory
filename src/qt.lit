@@ -1,0 +1,39 @@
+@code_type c .c
+
+@s QT Implementation
+
+--- qt/main.c --- noWeave
+@{Benchmark Structure}
+---
+
+--- Includes +=
+
+---
+
+--- Graphical Initialization
+---
+
+--- Window Construction
+---
+
+--- Globals
+---
+
+--- Display Note
+---
+
+--- "qt/Makefile"
+---
+
+@s Results
+
+### Obtained Interface
+
+### Evaluation
+
+<br />
+**RAM Usage** -
+<br />
+**Implementation Dificulty** - 
+<br />
+**Supported Platforms** - 

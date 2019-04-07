@@ -14,3 +14,4 @@ So the focus of this text will be to create a benchmark on the multiple availabl
 [What to Test](src/note_application.lit)
 [How to Test](src/benchmarks.lit)
 [GTK Implementation](src/gtk.lit)
+[QT Implementation](src/qt.lit)

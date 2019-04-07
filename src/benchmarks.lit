@@ -14,7 +14,7 @@ Since each pixel will occupy memory, the application window will be set to a fix
 
 <br/>
 For each application we will measure:
-* RAM Usage when open
+* RAM Usage
 * Implementation Dificulty
 * Supported Platforms
 

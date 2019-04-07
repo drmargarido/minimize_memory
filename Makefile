@@ -1,6 +1,7 @@
 all:
 	mkdir -p build
 	mkdir -p build/gtk
+	mkdir -p build/qt
 	literate/./lit src/main.lit --out-dir build/
 	cp -R images build/_book/
 	cd build/gtk/ && make
