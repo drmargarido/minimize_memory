@@ -143,8 +143,8 @@ After we have text in the text field to insert new notes and we click the `Inser
 static void insert_clicked (GtkWidget *widget, gpointer data){
   guint16 text_length = gtk_entry_get_text_length (GTK_ENTRY (insert_text));
   if(text_length != 0){
-	  gchar * text;
-	  text = gtk_entry_get_text (GTK_ENTRY (insert_text));
+	gchar * text;
+	text = gtk_entry_get_text (GTK_ENTRY (insert_text));
 
     @{Insert Note}
 

@@ -7,10 +7,16 @@
 ---
 
 --- Includes +=
+#include <string.h>
+---
+
+--- Includes +=
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Select_Browser.H>
 ---
 
 --- Graphical Initialization
@@ -23,27 +29,75 @@ window->show(argc, argv);
 status = Fl::run();
 ---
 
+--- Globals
+Fl_Input * input = NULL;
+Fl_Input * search_input = NULL;
+Fl_Select_Browser * list = NULL;
+---
+
 --- Window Construction
+@{Insert Button Callback}
+@{Search Changed Callback}
+
 void build_window(){
-  int input_w = WIDTH / 4 * 2.5;
-	Fl_Input *input = new Fl_Input(SIDE_MARGIN, 20, input_w, WIDGET_HEIGHT, "");
+	int y_row = ROW_SPACE;
+	new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Create New");
+
+	y_row += WIDGET_HEIGHT;
+	int input_w = WIDTH / 4 * 2.5;
+	input = new Fl_Input(SIDE_MARGIN, y_row, input_w, WIDGET_HEIGHT, "");
 
 	int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
 	Fl_Button * button = new Fl_Button(
 		SIDE_MARGIN * 2 + input_w, 
-		20, 
+		y_row,
 		button_w,
 		WIDGET_HEIGHT,
 		"Insert" 
 	);
+	button->callback(insert_note);
+
+	y_row += WIDGET_HEIGHT + ROW_SPACE / 2;
+	new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Search");
+
+	y_row += WIDGET_HEIGHT;
+	search_input = new Fl_Input(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "");
+
+	y_row += WIDGET_HEIGHT + ROW_SPACE;
+	list = new Fl_Select_Browser (
+		WIDTH / 13,
+		y_row,
+		WIDTH / 13 * 11,
+		HEIGHT - y_row - ROW_SPACE,
+		""
+	);
 }
 ---
 
---- Globals
+--- Insert Button Callback
+void insert_note(Fl_Widget * w, void * data){
+	if(input->size() > 0){
+		char text[NOTE_SIZE] = "";
+		strncpy(text, input->value(), NOTE_SIZE);
+		
+		@{Insert Note}
+
+		if(result == 0){
+			input->value("", 0);
+		}
+	}
+}
+---
+
+--- Search Changed Callback
+---
+
+--- Constants +=
 #define WIDTH 400
 #define HEIGHT 300
 #define SIDE_MARGIN 15
-#define WIDGET_HEIGHT 30
+#define ROW_SPACE 10
+#define WIDGET_HEIGHT 25
 ---
 
 --- Display Note
