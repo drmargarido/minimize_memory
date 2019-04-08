@@ -1,0 +1,69 @@
+@code_type c++ .cpp
+
+@s FLTK Implementation
+
+--- fltk/main.cpp --- noWeave
+@{Benchmark Structure}
+---
+
+--- Includes +=
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Input.H>
+#include <FL/Fl_Button.H>
+---
+
+--- Graphical Initialization
+Fl_Window *window = new Fl_Window(WIDTH,HEIGHT);
+
+build_window();
+
+window->end();
+window->show(argc, argv);
+status = Fl::run();
+---
+
+--- Window Construction
+void build_window(){
+  int input_w = WIDTH / 4 * 2.5;
+	Fl_Input *input = new Fl_Input(SIDE_MARGIN, 20, input_w, WIDGET_HEIGHT, "");
+
+	int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
+	Fl_Button * button = new Fl_Button(
+		SIDE_MARGIN * 2 + input_w, 
+		20, 
+		button_w,
+		WIDGET_HEIGHT,
+		"Insert" 
+	);
+}
+---
+
+--- Globals
+#define WIDTH 400
+#define HEIGHT 300
+#define SIDE_MARGIN 15
+#define WIDGET_HEIGHT 30
+---
+
+--- Display Note
+---
+
+--- "fltk/Makefile"
+all:
+	gcc `fltk-config --compile main.cpp`
+---
+
+
+@s Results
+
+### Obtained Interface
+
+### Evaluation
+
+<br />
+**RAM Usage** -
+<br />
+**Implementation Dificulty** - 
+<br />
+**Supported Platforms** - 
