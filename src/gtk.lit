@@ -6,7 +6,7 @@
 @{Benchmark Structure}
 ---
 
-The gtk implementation uses the base benchamark structure.
+The gtk implementation uses the base benchmark structure.
 To be able to use the gtk features we need the gtk.h header file.
 
 --- Includes +=
@@ -73,7 +73,7 @@ To make the list with the notes be scrolable and not expand infinitely we create
 --- Layout Organization
 // create window
 window = gtk_application_window_new (app);
-gtk_window_set_title (GTK_WINDOW (window), "Notes Reminder");
+gtk_window_set_title (GTK_WINDOW (window), TITLE);
 gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
 
 // create containing boxes

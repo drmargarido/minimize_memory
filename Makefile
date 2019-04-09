@@ -23,3 +23,4 @@ presentation:
 clean:
 	rm -f -R presentation
 	rm -f -R build
+	rm -f src/main.lit

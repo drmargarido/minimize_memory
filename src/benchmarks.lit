@@ -72,6 +72,13 @@ In order to register notes from the program we need to pass the received text to
 #define COMMAND_SIZE (NOTE_SIZE*2)
 ---
 
+As specified before our window must be 400x300 in size. Also the window title will be 'Notes Reminder'
+--- Constants +=
+#define TITLE "Notes Reminder"
+#define WIDTH 400
+#define HEIGHT 300
+---
+
 Since most of the tests will be done in a Linux environment, to get the current process memory we can read the /proc/self/status file, where self is a link to the current process. This will give us the memory in kB.
 
 --- Measure Memory

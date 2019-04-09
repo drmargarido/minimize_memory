@@ -2,13 +2,13 @@
 
 @s FLTK Implementation
 
+The FLTK implementation will follow the base benchmark structure.
+
 --- fltk/main.cpp --- noWeave
 @{Benchmark Structure}
 ---
 
---- Includes +=
-#include <string.h>
----
+In order to build the wanted interface as specified in the mockup we need the fltk toolkit, a window, input boxes to insert text, a button to trigger the insertion of notes and a list to display the result of the notes searching. Here we have the needed imports for that.
 
 --- Includes +=
 #include <FL/Fl.H>
@@ -16,11 +16,21 @@
 #include <FL/Fl_Input.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Box.H>
-#include <FL/Fl_Select_Browser.H>
+#include <FL/Fl_Hold_Browser.H>
 ---
 
+To have a consistent interface we will use the fixed values for side margin, row spacing and for the widgets height.
+
+--- Constants +=
+#define SIDE_MARGIN 15
+#define ROW_SPACE 10
+#define WIDGET_HEIGHT 25
+---
+
+We start by setting the window configuration and triggering the building of the main interface.
+
 --- Graphical Initialization
-Fl_Window *window = new Fl_Window(WIDTH,HEIGHT);
+Fl_Window *window = new Fl_Window(WIDTH, HEIGHT, TITLE);
 
 build_window();
 
@@ -29,50 +39,73 @@ window->show(argc, argv);
 status = Fl::run();
 ---
 
---- Globals
-Fl_Input * input = NULL;
-Fl_Input * search_input = NULL;
-Fl_Select_Browser * list = NULL;
----
+To construct the interface we will build two main areas, the insert area where we input new notes to the rememberfile and the search area where we search and filter notes in the same file.
+
+<br />
+By having this events we will need some logic to handle the notes submition and the notes search, which will go in the callbacks.
 
 --- Window Construction
 @{Insert Button Callback}
 @{Search Changed Callback}
 
 void build_window(){
-	int y_row = ROW_SPACE;
-	new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Create New");
-
-	y_row += WIDGET_HEIGHT;
-	int input_w = WIDTH / 4 * 2.5;
-	input = new Fl_Input(SIDE_MARGIN, y_row, input_w, WIDGET_HEIGHT, "");
-
-	int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
-	Fl_Button * button = new Fl_Button(
-		SIDE_MARGIN * 2 + input_w, 
-		y_row,
-		button_w,
-		WIDGET_HEIGHT,
-		"Insert" 
-	);
-	button->callback(insert_note);
-
-	y_row += WIDGET_HEIGHT + ROW_SPACE / 2;
-	new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Search");
-
-	y_row += WIDGET_HEIGHT;
-	search_input = new Fl_Input(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "");
-
-	y_row += WIDGET_HEIGHT + ROW_SPACE;
-	list = new Fl_Select_Browser (
-		WIDTH / 13,
-		y_row,
-		WIDTH / 13 * 11,
-		HEIGHT - y_row - ROW_SPACE,
-		""
-	);
+	@{Build Insert Area}
+	@{Build Search Area}
 }
 ---
+
+In the insert area we want a label at the top, then an input text field to insert notes and a button to insert the note after writing it.
+
+--- Build Insert Area
+// Top Label
+int y_row = ROW_SPACE;
+new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Create New");
+
+// Insert Text
+y_row += WIDGET_HEIGHT;
+int input_w = WIDTH / 4 * 2.5;
+input = new Fl_Input(SIDE_MARGIN, y_row, input_w, WIDGET_HEIGHT, "");
+
+// Insert Button
+int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
+Fl_Button * button = new Fl_Button(
+	SIDE_MARGIN * 2 + input_w, 
+	y_row,
+	button_w,
+	WIDGET_HEIGHT,
+	"Insert" 
+);
+button->callback(insert_note);
+---
+
+The search area we want a label at the the, an input text field to search the notes and a list which will update when changes are made in the text field. The list starts filled with all the notes so we can start searching.
+
+--- Build Search Area
+// Search Label
+y_row += WIDGET_HEIGHT + ROW_SPACE / 2;
+new Fl_Box(WIDTH / 3, y_row, WIDTH / 3, WIDGET_HEIGHT, "Search");
+
+// Search Input text
+y_row += WIDGET_HEIGHT;
+search_input = new Fl_Input(WIDTH / 4, y_row, WIDTH / 4 * 2, WIDGET_HEIGHT, "");
+search_input->when(FL_WHEN_CHANGED);
+search_input->callback(search_change);
+
+// Search results list
+y_row += WIDGET_HEIGHT + ROW_SPACE;
+list = new Fl_Hold_Browser (
+	SIDE_MARGIN,
+	y_row,
+	WIDTH - SIDE_MARGIN * 2,
+	HEIGHT - y_row - ROW_SPACE,
+	""
+);
+
+char text[NOTE_SIZE] = "";
+@{Search Notes}
+---
+
+When the insert button is pressed we want to read the data from the input field and insert it as a note in the remember file. If no data is in the field we can ignore the submition. After inserting the data we will clear the input field for new notes.
 
 --- Insert Button Callback
 void insert_note(Fl_Widget * w, void * data){
@@ -89,23 +122,46 @@ void insert_note(Fl_Widget * w, void * data){
 }
 ---
 
---- Search Changed Callback
+Since we will need to get the text in the input text field from the button callback we make it global.
+
+--- Globals
+Fl_Input * input = NULL;
 ---
 
---- Constants +=
-#define WIDTH 400
-#define HEIGHT 300
-#define SIDE_MARGIN 15
-#define ROW_SPACE 10
-#define WIDGET_HEIGHT 25
+When the text in the search input field changes we clear the notes list and refresh it with data searched using the received text and fill the list with the results.
+
+--- Search Changed Callback
+void search_change(Fl_Widget * w, void * data){
+	char text[NOTE_SIZE] = "";
+	strncpy(text, search_input->value(), NOTE_SIZE);
+
+	// Clear current entries
+	list->clear();
+
+	@{Search Notes}
+}
 ---
+
+To be able to access the search field and the results list from the search callback we will make the search input and the results list global.
+
+--- Globals +=
+Fl_Input * search_input = NULL;
+Fl_Hold_Browser * list = NULL;
+---
+
+For each item obtained as a result from the search in the .remember file we will add it to the results list.
 
 --- Display Note
+list->add(current_note);
 ---
+
+To compile this program we need ftlk1.3.5 libraries installed, and the we can use the fltk-config.
 
 --- "fltk/Makefile"
 all:
 	gcc `fltk-config --compile main.cpp`
+clean:
+	rm -f main
 ---
 
 
