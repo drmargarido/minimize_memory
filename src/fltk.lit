@@ -10,6 +10,9 @@ The FLTK implementation will follow the base benchmark structure.
 
 In order to build the wanted interface as specified in the mockup we need the fltk toolkit, a window, input boxes to insert text, a button to trigger the insertion of notes and a list to display the result of the notes searching. Here we have the needed imports for that.
 
+<br />
+In FLTK the browser is the list and we will use the box for the labels.
+
 --- Includes +=
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
@@ -155,7 +158,7 @@ For each item obtained as a result from the search in the .remember file we will
 list->add(current_note);
 ---
 
-To compile this program we need ftlk1.3.5 libraries installed, and the we can use the fltk-config.
+To compile this program we need ftlk1.3.5 libraries installed, and then we can use the fltk-config.
 
 --- "fltk/Makefile"
 all:
@@ -168,11 +171,15 @@ clean:
 @s Results
 
 ### Obtained Interface
+<br />
+![FLTK Notes](images/fltk_notes.png)
 
+<br />
+![FLTK Notes](images/fltk_notes2.png)
 ### Evaluation
 
 <br />
-**RAM Usage** -
+**RAM Usage** - 9.84MB
 <br />
 **Implementation Dificulty** - 
 <br />
