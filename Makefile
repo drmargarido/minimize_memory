@@ -2,6 +2,7 @@ all:
 	mkdir -p build
 	mkdir -p build/gtk
 	mkdir -p build/fltk
+	mkdir -p build/swing
 
 	# Compile each benchmark code one at a time so their implementation of the global macros will not override the other ones
 	while read in; do echo $$in > src/benchmark_imports.lit && ./generate_main.sh && literate/lit --tangle src/main.lit --out-dir build/; done < src/imports.txt
@@ -14,7 +15,8 @@ all:
 
 	# Compile each app
 	cd build/gtk/ && make
-	cd build/fltk/ && make
+	cd build/fltk/ && make -i
+	cd build/swing/ && make
 
 presentation:
 	mkdir -p presentation

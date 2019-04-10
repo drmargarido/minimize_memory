@@ -204,7 +204,7 @@ clean:
 **RAM Usage** - 26.54MB
 
 <br />
-**Implementation Dificulty** - All the widgets are based on the GtkWidget which allows fastly understand how they can be used. Their documentation is good and this implemented was done just with the help of their reference manual. The code implementation gave us full control of the implementaiton, but we could use the [glade](https://glade.gnome.org/) tool which allows us to drag and drop most of the gtk components to build the UI.
+**Implementation Dificulty** - All the widgets are based on the GtkWidget which allows fastly understand how they can be used. Their documentation is good and this implemented was done just with the help of their reference manual. The code implementation gave us full control of the implementaiton, but we could use the [glade](https://glade.gnome.org/) tool which allows us to drag and drop most of the gtk components to build the UI. The layout boxes took a bit to be able to manage the position of the elements,
 
 <br />
 **Supported Platforms** - GNU/Linux, Unix, Windows and Mac OS X

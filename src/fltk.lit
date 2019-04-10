@@ -13,6 +13,9 @@ In order to build the wanted interface as specified in the mockup we need the fl
 <br />
 In FLTK the browser is the list and we will use the box for the labels.
 
+<br />
+FLTK allows us to import only the widgets we really use.
+
 --- Includes +=
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
@@ -180,7 +183,9 @@ clean:
 
 <br />
 **RAM Usage** - 9.84MB
+
 <br />
-**Implementation Dificulty** - 
+**Implementation Dificulty** - The drawing of elements in the interface was really easy to start since it uses a simple approach of drawing in specific positions. The management of rows and margins needed manual calculations which would make the application harder to scale or resize if needed. The documentation has all the widgets well documented and they cover most use cases.
+
 <br />
-**Supported Platforms** - 
+**Supported Platforms** - GNU/Linux, Unix, Windows, macOS, AmigaOS 4

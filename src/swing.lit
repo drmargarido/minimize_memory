@@ -1,0 +1,44 @@
+@code_type java .java
+
+@s Swing Implementation
+
+--- swing/Main.java ---
+import javax.swing.*;  
+public class Main extends JFrame{
+	JFrame f;  
+
+	Main(){  
+		JButton button=new JButton("click");
+		b.setBounds(130,100,100, 40);  
+          
+		add(button);//adding button on frame  
+		setSize(400, 300);
+		setLayout(null);  
+		setVisible(true);  
+	}
+	  
+	public static void main(String[] args) {  
+		new Main();
+	}
+}
+---
+
+--- "swing/Makefile"
+all:
+	javac Main.java
+clean:
+	rm Main
+---
+
+@s Results
+
+### Obtained Interface
+
+
+### Evaluation
+<br />
+**RAM Usage** - 
+<br />
+**Implementation Dificulty** -
+<br />
+**Supported Platforms** -
