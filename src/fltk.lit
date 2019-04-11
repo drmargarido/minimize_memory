@@ -84,7 +84,10 @@ Fl_Button * button = new Fl_Button(
 button->callback(insert_note);
 ---
 
-The search area we want a label at the the, an input text field to search the notes and a list which will update when changes are made in the text field. The list starts filled with all the notes so we can start searching.
+The search area we want a label at the the, an input text field to search the notes and a list which will update when changes are made in the text field. The list starts filled with all the notes so we can start searching. 
+
+<br />
+To tell the list to trigger an event when a change occurs when pass the FL_WHEN_CHANGED flag to the search input.
 
 --- Build Search Area
 // Search Label

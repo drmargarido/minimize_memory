@@ -3,22 +3,95 @@
 @s Swing Implementation
 
 --- swing/Main.java ---
-import javax.swing.*;  
-public class Main extends JFrame{
-	JFrame f;  
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.DefaultListModel;
+import javax.swing.JScrollPane;
+import java.awt.Dimension;
+import javax.swing.ListSelectionModel;
 
-	Main(){  
-		JButton button=new JButton("click");
-		b.setBounds(130,100,100, 40);  
-          
-		add(button);//adding button on frame  
-		setSize(400, 300);
-		setLayout(null);  
-		setVisible(true);  
-	}
-	  
+public class Main implements ActionListener{
+	final static int WIDTH = 400;
+	final static int HEIGHT = 300;
+
+	final static int SIDE_MARGIN = 15;
+	final static int ROW_SPACE = 10;
+	final static int WIDGET_HEIGHT = 25;
+
 	public static void main(String[] args) {  
-		new Main();
+		JFrame frame = new JFrame("Notes Reminder");
+
+		JLabel insert_label = new JLabel("Create New");
+		JTextField insert_text = new JTextField();		
+		JButton button=new JButton("Insert");
+
+		JLabel search_label = new JLabel("Search");
+		JTextField search_text = new JTextField();
+		JList list = new JList();
+		DefaultListModel listModel = new DefaultListModel();
+	
+		// Insert Notes
+		int current_y = ROW_SPACE;
+		insert_label.setBounds(WIDTH / 5 * 2, current_y, WIDTH / 5, WIDGET_HEIGHT);
+
+		current_y += WIDGET_HEIGHT + ROW_SPACE;
+		int input_w = WIDTH / 5 * 3;
+		insert_text.setBounds(SIDE_MARGIN, current_y, input_w, WIDGET_HEIGHT);
+
+		int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
+		button.setBounds(SIDE_MARGIN * 2 + input_w, current_y, button_w, WIDGET_HEIGHT);  
+
+		// Search Notes
+		current_y += WIDGET_HEIGHT + ROW_SPACE;
+		search_label.setBounds(WIDTH / 7 * 3, current_y, WIDTH / 7, WIDGET_HEIGHT);
+
+		current_y += WIDGET_HEIGHT;
+		search_text.setBounds(WIDTH / 4, current_y, WIDTH / 4 * 2, WIDGET_HEIGHT);
+
+		current_y += WIDGET_HEIGHT + ROW_SPACE;
+
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		listModel.addElement("Teste");
+		list.setModel(listModel);
+		JScrollPane scroller = new JScrollPane(list);
+		scroller.setBounds(
+			SIDE_MARGIN,
+			current_y,
+			WIDTH - SIDE_MARGIN * 2,
+			HEIGHT - current_y - ROW_SPACE * 4
+		);
+		
+		// Add widgets to the frame
+		frame.add(insert_label);
+		frame.add(insert_text);
+		frame.add(button);
+
+		frame.add(search_label);
+		frame.add(search_text);
+		frame.add(scroller);
+
+		// Configure the frame and make it visible
+		frame.setSize(WIDTH, HEIGHT);
+		frame.setLayout(null);  
+		frame.setVisible(true);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+    
 	}
 }
 ---
