@@ -2,99 +2,204 @@
 
 @s Swing Implementation
 
+To the swing implementation we will need to use Java. So we will have a diferent structure and reimplement all of the program. The used RAM will be mesured by using the htop linux command.
+
+<br />
+The main program structure will be close to the main one but will provide some needed java constructs.
+
 --- swing/Main.java ---
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.DefaultListModel;
-import javax.swing.JScrollPane;
-import java.awt.Dimension;
-import javax.swing.ListSelectionModel;
+@{Includes}
 
-public class Main implements ActionListener{
-	final static int WIDTH = 400;
-	final static int HEIGHT = 300;
-
-	final static int SIDE_MARGIN = 15;
-	final static int ROW_SPACE = 10;
-	final static int WIDGET_HEIGHT = 25;
+public class Main{
+	@{Constants}
 
 	public static void main(String[] args) {  
-		JFrame frame = new JFrame("Notes Reminder");
-
-		JLabel insert_label = new JLabel("Create New");
-		JTextField insert_text = new JTextField();		
-		JButton button=new JButton("Insert");
-
-		JLabel search_label = new JLabel("Search");
-		JTextField search_text = new JTextField();
-		JList list = new JList();
-		DefaultListModel listModel = new DefaultListModel();
-	
-		// Insert Notes
-		int current_y = ROW_SPACE;
-		insert_label.setBounds(WIDTH / 5 * 2, current_y, WIDTH / 5, WIDGET_HEIGHT);
-
-		current_y += WIDGET_HEIGHT + ROW_SPACE;
-		int input_w = WIDTH / 5 * 3;
-		insert_text.setBounds(SIDE_MARGIN, current_y, input_w, WIDGET_HEIGHT);
-
-		int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
-		button.setBounds(SIDE_MARGIN * 2 + input_w, current_y, button_w, WIDGET_HEIGHT);  
-
-		// Search Notes
-		current_y += WIDGET_HEIGHT + ROW_SPACE;
-		search_label.setBounds(WIDTH / 7 * 3, current_y, WIDTH / 7, WIDGET_HEIGHT);
-
-		current_y += WIDGET_HEIGHT;
-		search_text.setBounds(WIDTH / 4, current_y, WIDTH / 4 * 2, WIDGET_HEIGHT);
-
-		current_y += WIDGET_HEIGHT + ROW_SPACE;
-
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		listModel.addElement("Teste");
-		list.setModel(listModel);
-		JScrollPane scroller = new JScrollPane(list);
-		scroller.setBounds(
-			SIDE_MARGIN,
-			current_y,
-			WIDTH - SIDE_MARGIN * 2,
-			HEIGHT - current_y - ROW_SPACE * 4
-		);
-		
-		// Add widgets to the frame
-		frame.add(insert_label);
-		frame.add(insert_text);
-		frame.add(button);
-
-		frame.add(search_label);
-		frame.add(search_text);
-		frame.add(scroller);
-
-		// Configure the frame and make it visible
-		frame.setSize(WIDTH, HEIGHT);
-		frame.setLayout(null);  
-		frame.setVisible(true);
-	}
-
-	public void actionPerformed(ActionEvent e) {
-    
+		@{Graphical Initialization}
 	}
 }
 ---
+
+As specified in our rules we will have the window size at 400x300 pixels. We also define constants for the space between rows, widgets height and the side margins.
+
+--- Constants :=
+final static int WIDTH = 400;
+final static int HEIGHT = 300;
+
+final static int ROW_SPACE = 10;
+final static int SIDE_MARGIN = 15;
+final static int WIDGET_HEIGHT = 25;
+---
+
+The window is built with a Jframe. To build the interface we want inside the frame we will first build the insert notes area and then the note search.
+
+--- Graphical Initialization
+JFrame frame = new JFrame("Notes Reminder");
+
+@{Insert Notes Area}
+@{Search Notes Area}
+
+// Configure the frame and make it visible
+frame.setSize(WIDTH, HEIGHT);
+frame.setLayout(null);  
+frame.setVisible(true);
+---
+
+Like in the mockup, for the insert area we will have a label at the top and then a input text area and a button bellow.
+
+<br />
+With swing we can use the pixels model of the FLTK for positioning or their containers. I already had the positions from the FLTK implementation so it was really just reusing them to keep the UI consistent.
+
+<br />
+After the building of the area we add the widgets to the frame specified before.
+
+--- Insert Notes Area
+JLabel insert_label = new JLabel("Create New");
+JTextField insert_text = new JTextField();
+JButton button = new JButton("Insert");
+
+// Insert Notes
+int current_y = ROW_SPACE;
+insert_label.setBounds(WIDTH / 5 * 2, current_y, WIDTH / 5, WIDGET_HEIGHT);
+
+current_y += WIDGET_HEIGHT + ROW_SPACE;
+int input_w = WIDTH / 5 * 3;
+insert_text.setBounds(SIDE_MARGIN, current_y, input_w, WIDGET_HEIGHT);
+
+int button_w = WIDTH - (SIDE_MARGIN * 3 + input_w);
+button.setBounds(SIDE_MARGIN * 2 + input_w, current_y, button_w, WIDGET_HEIGHT);
+
+@{Register Insert Callback}
+
+frame.add(insert_label);
+frame.add(insert_text);
+frame.add(button);
+---
+
+When the button in the insert area is clicked we want to add a note to the remember file. So we registered an action to be triggered when the button is pressed. This action uses the java ProcessBuilder to send the text from the input text area to the file. We ignore the click if there is no text to be sent. If everything went ok we clear the input text area.
+
+--- Register Insert Callback
+button.addActionListener(new ActionListener(){
+  public void actionPerformed(ActionEvent e){
+		String text = insert_text.getText();
+		if(text.length() > 0){
+			try {
+				new ProcessBuilder("remember", text).start();
+			} catch(IOException ex){
+				System.out.println(ex);
+			}
+
+			insert_text.setText("");
+		}
+  }
+});
+---
+
+The search area will have a label, search text field and a list with the search resulting notes.
+
+<br />
+The JList in swing is not scrollable, so if we kept adding elements to it, it would expand ad eternum. To resolve this a JScrollPane was used.
+
+<br />
+We initialize the list with all the notes on program startup.
+
+--- Search Notes Area
+JLabel search_label = new JLabel("Search");
+JList list = new JList();
+JTextField search_text = new JTextField();
+
+// Search Notes
+current_y += WIDGET_HEIGHT + ROW_SPACE;
+search_label.setBounds(WIDTH / 7 * 3, current_y, WIDTH / 7, WIDGET_HEIGHT);
+
+current_y += WIDGET_HEIGHT;
+search_text.setBounds(WIDTH / 4, current_y, WIDTH / 4 * 2, WIDGET_HEIGHT);
+@{Register Search Callback}
+
+current_y += WIDGET_HEIGHT + ROW_SPACE;
+JScrollPane scroller = new JScrollPane(list);
+scroller.setBounds(
+	SIDE_MARGIN,
+	current_y,
+	WIDTH - SIDE_MARGIN * 2,
+	HEIGHT - current_y - ROW_SPACE * 4
+);
+
+frame.add(search_label);
+frame.add(search_text);
+frame.add(scroller);
+
+@{Search Notes}
+---
+
+
+
+--- Register Search Callback
+search_text.getDocument().addDocumentListener(new DocumentListener() {
+  public void changedUpdate(DocumentEvent e) {
+    @{Search Notes}
+  }
+  public void removeUpdate(DocumentEvent e) {
+    @{Search Notes}
+  }
+  public void insertUpdate(DocumentEvent e) {
+    @{Search Notes}
+  }
+});
+---
+
+--- Includes :=
+import javax.swing.JList;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.lang.Process;
+import java.lang.ProcessBuilder;
+import java.lang.InterruptedException;
+
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+---
+
+
+
+
+
+
+--- Search Notes :=
+DefaultListModel listModel = new DefaultListModel();
+String text = search_text.getText();
+
+try {
+	Process process = new ProcessBuilder("remindme", text).start();
+	BufferedReader inputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+	process.waitFor();
+
+	while(inputReader.ready()){
+		listModel.addElement(inputReader.readLine());
+	}
+	list.setModel(listModel);
+	
+} catch(IOException ex){
+	System.out.println(ex);
+} catch(InterruptedException ex){
+	System.out.println(ex);
+}
+---
+
 
 --- "swing/Makefile"
 all:
