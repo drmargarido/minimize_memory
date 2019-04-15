@@ -19,23 +19,27 @@ header-includes:
 2. Estado atual
 3. Foco de Análise
 4. Consumos atuais
-5. Comparação de resultados
-6. Outras Alternativas
-7. Conclusões
-8. Motivação
-9. Questões
+5. Aplicação de Notas - GKT
+6. Aplicação de Notas - Swing
+7. Aplicação de Notas - FLTK
+8. Comparação de resultados
+9. Dados de outros casos
+10. Outras Alternativas
+11. Conclusões
+12. Motivação
+13. Questões
 
 
 # Problema
 
 ## Geral
-* Quando temos um computador novo ele é rápido, mas ao longo do tempo vai ficando mais lento e mesmo limpando, formatando, passados uns anos, temos de comprar um novo. Quem diz computador, diz telemovel, tablet, etc. Porque os nossos equipamentos ficam assim mais lentos ao longo do tempo?
+* Equipamentos ficam mais lentos ao longo do tempo.
 
-* A verdade é que não ficam, até pode haver algum desgaste em algumas peças do equipamento e isso afecte a velocidade, mas nas situações normais a velocidade do computador vai manter-se.
+* A verdade é que não ficam.
 
-* O que acontece é que o software que usamos diariamente, está cada vez mais pesado e a gastar mais recursos.
+* O software que usamos diariamente gasta cada vez mais recursos.
 
-* E usufruimos assim tanto de mais funcionalidades do que era usado à uns 5 ou 10 anos atras?
+* E usufruimos assim tanto de mais funcionalidades do que era usado à uns 5 ou 10 anos?
 
 ## Minha Workstation
 
@@ -79,34 +83,41 @@ Consumo de RAM: 503.1MB
 
 ## Porque isto acontece?
 
-* Empresas procuram sempre maximizar as funcionalidades que conseguem obter com o tempo dos programadores que tem, melhorar utilização de recursos está sempre no fundo da lista de prioridades. Quando algum ponto sobre isso é levantado a resposta mais comum é - "O hardware é barato".
+* Empresas procuram sempre maximizar as funcionalidades que conseguem obter com o tempo dos programadores 
 
-* A maioria dos programadores trabalham em sistemas relacionados com a web, que é um dos ecosistemas mais pesados. Sendo que é a tecnologia que as pessoas conhecem, quando começam a implementar outras aplicações mesmo que sejam nativas vão procurar usar o que já sabem.
+* "O hardware é barato"
 
-* Cada software, especialmente os softwares proprietários, implementa regularmente uma grande quantidade de funcionalidades em vez de seguir uma filosofia mais minimalista como a do UNIX - "Write programs that do one thing and do it well."
+* A maioria dos programadores trabalham em sistemas relacionados com a web.
+
+* Software com muitas funcionalidades em vez de uma filosofia minimalista.
+
+* "Write programs that do one thing and do it well."
 
 
 # Foco de Análise
 
 ## Recursos
 
-* Os sistemas desktop são pesados, Windows ocupa para cima de 2GB e mesmo o Ubuntu atual ocupa quase 1GB de RAM.
+* Windows ocupa para cima de 2GB e mesmo o Ubuntu atual ocupa quase 1GB de RAM.
 
 * 20MB de RAM é quanto ocupa um servidor OpenBSD acabado de instalar.
 
 ## Comparação
 
-* Claro que comparar um servidor que tem interface de linha de comandos com um sistema com ambiente gráfico completo é uma comparação injusta.
+* Servidor que tem interface de linha de comandos vs um sistema com ambiente gráfico completo.
 
-* Mas se essa é a diferença principal que faz o sistema ocupar 40x mais RAM, temos de tentar reduzir o máximo que conseguirmos.
+* 40x mais RAM, temos de tentar reduzir o máximo que conseguirmos.
 
 
 # Consumos Atuais 
 
 ## Metodologia
-* De modo a entender melhor quais sistemas são mais leves ou mais pesados e para conhecermos mais toolkit gráficos decidiu-se a implementação de uma aplicação de notas usando várias ferramentas diferentes.
 
-* A aplicação deve permitir a inserção de notas no nosso ficheiro de notas e a sua pesquisa.
+* Pesquisa de toolkit gráficos.
+
+* Implementação de aplicação de notas.
+
+* Inserção de notas no em ficheiro e a sua pesquisa.
 
 * Em cada teste vamos medir:
     - Utilização de memória RAM
@@ -115,24 +126,24 @@ Consumo de RAM: 503.1MB
 
 ## Regras
 
-* Visto que cada pixel no ecrã vai ocupar memória definiu-se que o tamanho da aplicação vai ser de 400x300
+* Tamanho de janela 400x300.
 
-* De modo a que a lógica de inserção e pesquisa de notas não nos influêncie o tamanho dos testes, foram criados dois bash scripts para essas funcionalidades, sendo que cada teste vai implementar apenas a interface usando o toolkit gráfico pretendido.
+* Implementar apenas a interface usando o toolkit gráfico.
 
 ## Mockup da Aparência Desejada
 
 ![Mockup Interface](images/notes_mockup.png)
 
-## Aplicação de Notas - GKT
-### Apresentação
+# Aplicação de Notas - GKT
+## Apresentação
 
 \begincols{}
 \column{0.60\textwidth}
 
-* Criado em 1998
-* Implementado em C
-* Desenvolvido pelo GNOME Project
-* Maioria dos ambientes gráficos mais utilizados em linux utilizam gtk
+* Criado em 1998.
+* Implementado em C.
+* Desenvolvido pelo GNOME Project.
+* Maioria dos ambientes gráficos mais utilizados em linux utilizam gtk.
 
 \column{0.38\textwidth}
 ![GTK logo](images/gtk_logo.png)
@@ -141,7 +152,7 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Resultado
+## Resultado
 
 \begincols{}
 
@@ -155,23 +166,23 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Avaliação
+## Avaliação
 * Utilização de memória RAM - 26.54MB
 * Plataformas Suportadas - GNU/Linux, Unix, Windows e Mac OS X
 * Simplicidade de implementação:
-    - Todos os widgets são baseados no tipo GtkWidget o que facilita a percepção de como podem ser usados.
-    - O manual de referência do site deles é de fácil pesquisa e contem boa documentação de todos os widgets.
-    - A implementação por código deu-nos controlo total do programa, mas podiamos usar o glade que permite a construção de interfaces gtk só com drag and drop.
-    - O unico ponto que deu mais trabalho a conseguir gerir foram as caixas de layout que são utilizadas para definir a posição dos widgets.
+    - Widgets baseados em GtkWidget.
+    - Manual de fácil pesquisa e com boa documentação.
+    - Glade para construção de interface só com drag and drop.
+    - Trabalhoso usar as caixas de layout que são para definir posição dos widgets.
 
-## Aplicação de Notas - Swing
-### Apresentação
+# Aplicação de Notas - Swing
+## Apresentação
 \begincols{}
 \column{0.60\textwidth}
 
-* Criado em 1997 pela Sun Microsystems e pela Netscape Communications Corporation
+* Criado em 1997
 * Implementado em Java
-* Procura ser uma alternativa lightweight em relação ao java AWT
+* Alternativa lightweight ao java AWT
 * Desenha os próprios widgets sem utilizar os do sistema
 
 \column{0.38\textwidth}
@@ -181,7 +192,7 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Resultado
+## Resultado
 
 \begincols{}
 
@@ -195,7 +206,7 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Avaliação
+## Avaliação
 * Utilização de memória RAM - 55.60MB
 * Plataformas Suportadas - Platform-Independent
 * Simplicidade de implementação:
@@ -203,8 +214,8 @@ Consumo de RAM: 503.1MB
     - Escassos exemplos de utilização.
     - Utilização simples permite posicionamento usando layouts e posicionamento directo na frame.
 
-## Aplicação de Notas - FLTK
-### Apresentação
+# Aplicação de Notas - FLTK
+## Apresentação
 
 \begincols{}
 \column{0.60\textwidth}
@@ -221,7 +232,7 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Resultado
+## Resultado
 
 \begincols{}
 
@@ -235,15 +246,15 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Avaliação
+## Avaliação
 
 * Utilização de memória RAM - 9.84MB
 * Plataformas Suportadas - GNU/Linux, Unix, Windows, macOS, AmigaOS 4
 * Simplicidade de implementação:
-    - O desenho de elementos na interface foi simples de começar pois utiliza uma abordagem simples de desenhar directamente nas posições
-    - A gestão de linhas e margens precisou de calculos manuais o que faz com que a aplicação seja mais trabalhosa de mudar de ajustar a escala quando for necessário
-    - A documentação tem todos os widgets bem documentados e eles abordam a maioria dos casos de uso 
-    - Para facilitar a implementação pode ser utilizada a ferramenta FLUID que permite construir a interface com drag and drop
+    - Desenho de elementos na interface simples
+    - Gestão de linhas e margens precisou de calculos manuais
+    - Documentação tem os widgets bem documentados e aborda a maioria dos casos de uso 
+    - FLUID permite construir a interface com drag and drop
 
 
 # Comparação de resultados
@@ -263,9 +274,9 @@ Consumo de RAM: 503.1MB
 \stopcols
 
 
-## Dados de outros casos
+# Dados de outros casos
 
-### Electron
+## Electron
 
 \begincols{}
 
@@ -282,13 +293,13 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Electron Example
+## Electron Example
 
 ![Slack](images/slack.jpg)
 
 ---
 
-### Tekui
+## Tekui
 
 \begincols{}
 
@@ -306,14 +317,14 @@ Consumo de RAM: 503.1MB
 
 ---
 
-### Tekui Example
+## Tekui Example
 
 ![Tekui Usage](images/tekui_example.png)
 
 ---
 
 
-### Wayland Client
+## Wayland Client
 
 
 \begincols{}
