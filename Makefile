@@ -22,6 +22,9 @@ presentation:
 	mkdir -p presentation
 	pandoc --slide-level 2 -s presentation.md -t beamer -o presentation/presentation.pdf
 
+preview_presentation:
+	make clean && make presentation && zathura presentation/presentation.pdf
+
 clean:
 	rm -f -R presentation
 	rm -f -R build

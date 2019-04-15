@@ -1,5 +1,5 @@
 ---
-title: Reduzir RAM em Aplicações Gráficas
+title: Que Stack Gráfica Escolher?
 subtitle: ENEI 2019
 author: Daniel Margarido
 date: \today
@@ -10,6 +10,7 @@ header-includes:
     - \let\olditem\item \renewcommand{\item}{\setlength{\itemsep}{\fill}\olditem}
     - \newcommand{\begincols}[1]{\begin{columns}{#1}} 
     - \newcommand{\stopcols}{\end{columns}}
+    - \hypersetup{colorlinks=true, linkcolor=, urlcolor=blue}
 ---
 
 ## Indice
@@ -17,26 +18,42 @@ header-includes:
 1. Problema
 2. Estado atual
 3. Foco de Análise
-4. História de ambientes gráficos
-5. Consumos atuais
-6. Missão redução máxima
-7. Outras Alternativas
-8. Comparação de resultados
-9. Conclusões
-10. Motivação
-11. Questões
+4. Consumos atuais
+5. Comparação de resultados
+6. Outras Alternativas
+7. Conclusões
+8. Motivação
+9. Questões
 
 
 # Problema
 
-## Problema
+## Geral
 * Quando temos um computador novo ele é rápido, mas ao longo do tempo vai ficando mais lento e mesmo limpando, formatando, passados uns anos, temos de comprar um novo. Quem diz computador, diz telemovel, tablet, etc. Porque os nossos equipamentos ficam assim mais lentos ao longo do tempo?
 
 * A verdade é que não ficam, até pode haver algum desgaste em algumas peças do equipamento e isso afecte a velocidade, mas nas situações normais a velocidade do computador vai manter-se.
 
 * O que acontece é que o software que usamos diariamente, está cada vez mais pesado e a gastar mais recursos.
 
-* E usufruimos assim tanto de mais funcionalidades do que era usado à uns 10 ou 20 anos atras?
+* E usufruimos assim tanto de mais funcionalidades do que era usado à uns 5 ou 10 anos atras?
+
+## Minha Workstation
+
+\begincols{}
+
+\column{0.49\textwidth}
+
+* 1GB de RAM
+* 8GB de armazenamento
+* 4× ARM Cortex-A53, 1.2GHz
+* 2 Motores 92RPM
+* Robot Tank Chasis
+
+
+\column{0.49\textwidth}
+![Raspberry Tank](images/raspberry.jpg)
+
+\stopcols
 
 
 # Estado atual
@@ -82,9 +99,6 @@ Consumo de RAM: 503.1MB
 * Claro que comparar um servidor que tem interface de linha de comandos com um sistema com ambiente gráfico completo é uma comparação injusta.
 
 * Mas se essa é a diferença principal que faz o sistema ocupar 40x mais RAM, temos de tentar reduzir o máximo que conseguirmos.
-
-
-# História de ambientes gráficos
 
 
 # Consumos Atuais 
@@ -231,30 +245,161 @@ Consumo de RAM: 503.1MB
     - A documentação tem todos os widgets bem documentados e eles abordam a maioria dos casos de uso 
     - Para facilitar a implementação pode ser utilizada a ferramenta FLUID que permite construir a interface com drag and drop
 
-## Estimativas de Outros Casos
+
+# Comparação de resultados
+## Comparação
+
+\begincols{}
+
+\column{0.30\textwidth}
+![GTK](images/gtk_notes.png)
+
+\column{0.30\textwidth}
+![Swing](images/swing_notes.png)
+
+\column{0.30\textwidth}
+![FLTK](images/fltk_notes.png)
+
+\stopcols
+
+
+## Dados de outros casos
 
 ### Electron
-### QT
-### .NET
+
+\begincols{}
+
+\column{0.70\textwidth}
+
+* Hello World utiliza 125MB de RAM
+* Rapidamente flutua para valores mais altos
+* Chromium com aplicação no topo
+
+\column{0.20\textwidth}
+![Electron Logo](images/electron_logo.png)
+
+\stopcols
+
+---
+
+### Electron Example
+
+![Slack](images/slack.jpg)
+
+---
+
+### Tekui
+
+\begincols{}
+
+\column{0.70\textwidth}
+
+* Hello World utiliza 9.8MB de RAM
+* Utiliza Lua para scripting
+* Permite mudar estilos com CSS
+* Cross-Platform
+
+\column{0.20\textwidth}
+![Tekui Logo](images/tekui_logo.png)
+
+\stopcols
+
+---
+
+### Tekui Example
+
+![Tekui Usage](images/tekui_example.png)
+
+---
+
+
+### Wayland Client
+
+
+\begincols{}
+
+\column{0.70\textwidth}
+
+* Hello World utiliza - 868KB de RAM
+* Disponibiliza um pixelbuffer
+* É preciso implementar toda a stack
+* Alternativa Wayland + ImGui
+
+\column{0.20\textwidth}
+![Wayland](images/wayland_logo.png)
+
+\stopcols
+
 
 # Outras Alternativas para Testar
 
-##
-* 
+## Com muitas funcionalidades
 
-# Comparação de resultados
-    # Ações possiveis
-    ## Como developers o que podemos fazer
+* QT
+* .NET
 
-    * Podemos tentar reduzir o consumo de recursos da nossas aplicações
-    * Perceber realmente que funcionalidades vamos utilizar do toolkit gráfico, de modo a podermos selecionar algo mais leve que permita a mesma funcionalidade
+## Lightweight
 
-    ---
+* tk
+* motif
+* IUP
+* SDL
 
-    * Versão command line da aplicação
+## Sistema
+
+* Win32
+* X.org
+
 
 # Conclusões
 
+## Conclusões
+
+* Toolkits mais apelativos
+* Maximizar a produtividade
+* Cross-platform
+* É possivel reduzir o consumo de memória
+
+
 # Motivação
 
+## Futuro
+
+* Melhorar o software das empresas
+* Manter o raspberry como máquina de trabalho durante mais uns 5 anos
+* Não ter de trocar de hardware de 2 em 2 anos
+
+## Software Minimalista
+
+* [suckless](https://suckless.org/)
+* [ALTERNATIVES](https://github.com/mayfrost/guides/blob/master/ALTERNATIVES.md)
+* [harmful.cat-v](http://harmful.cat-v.org/software/)
+* [Luke Smith](https://lukesmith.xyz/programs.html)
+* [Linux Rice](https://wiki.installgentoo.com/index.php/GNU/Linux_ricing)
+
+
 # Questões
+
+## Contactos
+
+
+\begincols{}
+
+\column{0.64\textwidth}
+
+* Email: 
+	- drmargarido@gmail.com
+* Apresentação: 
+	- [https://github.com/drmargarido/minimize_memory](https://github.com/drmargarido/minimize_memory)
+
+* Github: 
+	- [https://github.com/drmargarido](https://github.com/drmargarido)
+* Bitbucket: 
+	- [https://bitbucket.org/Alface0/](https://bitbucket.org/Alface0/)
+* Itch.io: 
+	- [https://drmargarido.itch.io/](https://drmargarido.itch.io/)
+
+\column{0.35\textwidth}
+![Duvidas](images/question_mark.gif)
+
+\stopcols
