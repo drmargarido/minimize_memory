@@ -8,86 +8,253 @@ colortheme: beaver
 fontfamily: merriweather
 header-includes:
     - \let\olditem\item \renewcommand{\item}{\setlength{\itemsep}{\fill}\olditem}
+    - \newcommand{\begincols}[1]{\begin{columns}{#1}} 
+    - \newcommand{\stopcols}{\end{columns}}
 ---
 
 ## Indice
 
-1. Estado atual/Problema
-2. O que podemos fazer
-3. Base de testes
-4. Stacks Principais
-5. Alternativas Mais Leves
-6. Interação directa com sistema
-7. Missão redução máxima
+1. Problema
+2. Estado atual
+3. Foco de Análise
+4. História de ambientes gráficos
+5. Consumos atuais
+6. Missão redução máxima
+7. Outras Alternativas
 8. Comparação de resultados
 9. Conclusões
+10. Motivação
+11. Questões
 
 
-# Estado atual/Problema
+# Problema
 
-## Panorama atual 
+## Problema
+* Quando temos um computador novo ele é rápido, mas ao longo do tempo vai ficando mais lento e mesmo limpando, formatando, passados uns anos, temos de comprar um novo. Quem diz computador, diz telemovel, tablet, etc. Porque os nossos equipamentos ficam assim mais lentos ao longo do tempo?
 
-* Os sistemas continuam a crescer como se toda a gente tivesse 64GB de RAM
-* 20MB de ram chegam para ter um servidor
-* O sistemas populares mais pequenos com parte gráfica ainda são grandes demais
-* Troca regular de hardware desnecessária
-* Aplicações a ficarem mais pesadas a cada dia que passa
+* A verdade é que não ficam, até pode haver algum desgaste em algumas peças do equipamento e isso afecte a velocidade, mas nas situações normais a velocidade do computador vai manter-se.
 
-## Exemplos - Windows
+* O que acontece é que o software que usamos diariamente, está cada vez mais pesado e a gastar mais recursos.
 
-* Windows 10 - 2GB
- 
-## Exemplos - Ubuntu 18.04
-
-* Ubuntu + Gnome - 700MB
-
-## Exemplos - Kubuntu 18.04
-
-* Ubuntu + KDE - 1GB
+* E usufruimos assim tanto de mais funcionalidades do que era usado à uns 10 ou 20 anos atras?
 
 
-# Ações possiveis
-## Como developers o que podemos fazer
+# Estado atual
+## Windows 10 Acabado de Ligar
 
-* Podemos tentar reduzir o consumo de recursos da nossas aplicações
-* Perceber realmente que funcionalidades vamos utilizar do toolkit gráfico, de modo a podermos selecionar algo mais leve que permita a mesma funcionalidade
+Consumo de RAM: 2.4GB
+![Windows](images/Windows_10.png)
+
+## Firefox com tab de texto
+
+Consumo de RAM: 514MB
+![Firefox](images/firefox_text.png)
+
+## Intellij IDEA Acabado de Abrir
+
+Consumo de RAM: 848MB
+![IDEA](images/idea.png)
+
+## Discord
+
+Consumo de RAM: 503.1MB
+![Discord](images/discord.png)
+
+## Porque isto acontece?
+
+* Empresas procuram sempre maximizar as funcionalidades que conseguem obter com o tempo dos programadores que tem, melhorar utilização de recursos está sempre no fundo da lista de prioridades. Quando algum ponto sobre isso é levantado a resposta mais comum é - "O hardware é barato".
+
+* A maioria dos programadores trabalham em sistemas relacionados com a web, que é um dos ecosistemas mais pesados. Sendo que é a tecnologia que as pessoas conhecem, quando começam a implementar outras aplicações mesmo que sejam nativas vão procurar usar o que já sabem.
+
+* Cada software, especialmente os softwares proprietários, implementa regularmente uma grande quantidade de funcionalidades em vez de seguir uma filosofia mais minimalista como a do UNIX - "Write programs that do one thing and do it well."
 
 
-# Comparação entre consumo de recursos
+# Foco de Análise
 
-## Base de testes
+## Recursos
 
-* Aplicação para tirar notas e pesquisar mais tarde
-* Backend implementado com shell scripts isolando a UI da lógica da inserção e pesquisa
-* Tamanho da janela - 400x300
-* Parametros de avaliação:
-    + Utilização de memória RAM
-    + Simplicidade de implementação
-    + Multiplataforma
+* Os sistemas desktop são pesados, Windows ocupa para cima de 2GB e mesmo o Ubuntu atual ocupa quase 1GB de RAM.
+
+* 20MB de RAM é quanto ocupa um servidor OpenBSD acabado de instalar.
+
+## Comparação
+
+* Claro que comparar um servidor que tem interface de linha de comandos com um sistema com ambiente gráfico completo é uma comparação injusta.
+
+* Mas se essa é a diferença principal que faz o sistema ocupar 40x mais RAM, temos de tentar reduzir o máximo que conseguirmos.
+
+
+# História de ambientes gráficos
+
+
+# Consumos Atuais 
+
+## Metodologia
+* De modo a entender melhor quais sistemas são mais leves ou mais pesados e para conhecermos mais toolkit gráficos decidiu-se a implementação de uma aplicação de notas usando várias ferramentas diferentes.
+
+* A aplicação deve permitir a inserção de notas no nosso ficheiro de notas e a sua pesquisa.
+
+* Em cada teste vamos medir:
+    - Utilização de memória RAM
+    - Simplicidade de implementação
+    - Plataformas Suportadas
+
+## Regras
+
+* Visto que cada pixel no ecrã vai ocupar memória definiu-se que o tamanho da aplicação vai ser de 400x300
+
+* De modo a que a lógica de inserção e pesquisa de notas não nos influêncie o tamanho dos testes, foram criados dois bash scripts para essas funcionalidades, sendo que cada teste vai implementar apenas a interface usando o toolkit gráfico pretendido.
+
+## Mockup da Aparência Desejada
+
+![Mockup Interface](images/notes_mockup.png)
+
+## Aplicação de Notas - GKT
+### Apresentação
+
+\begincols{}
+\column{0.60\textwidth}
+
+* Criado em 1998
+* Implementado em C
+* Desenvolvido pelo GNOME Project
+* Maioria dos ambientes gráficos mais utilizados em linux utilizam gtk
+
+\column{0.38\textwidth}
+![GTK logo](images/gtk_logo.png)
+
+\stopcols
 
 ---
 
-* Versão command line da aplicação
+### Resultado
 
-## Stacks Principais - .NET
-## Stacks Principais - GTK
-## Stacks Principais - QT
+\begincols{}
 
-## Alternativas Mais Leves - Enlightment
-## Alternativas Mais Leves - FLTK
-## Alternativas Mais Leves - tk
-## Alternativas Mais Leves - motif
-## Alternativas Mais Leves - SDL?
-## Alternativas Mais Leves - IUP
-## Alternativas Mais Leves - Tekui
+\column{0.49\textwidth}
+![GTK Notas](images/gtk_notes.png)
 
-## Interação directa com sistema - Win32
-## Interação directa com sistema - X.org
-## Interação directa com sistema - Wayland
+\column{0.49\textwidth}
+![GTK Notas](images/gtk_notes2.png)
 
+\stopcols
 
-# Missão redução máxima
+---
+
+### Avaliação
+* Utilização de memória RAM - 26.54MB
+* Plataformas Suportadas - GNU/Linux, Unix, Windows e Mac OS X
+* Simplicidade de implementação:
+    - Todos os widgets são baseados no tipo GtkWidget o que facilita a percepção de como podem ser usados.
+    - O manual de referência do site deles é de fácil pesquisa e contem boa documentação de todos os widgets.
+    - A implementação por código deu-nos controlo total do programa, mas podiamos usar o glade que permite a construção de interfaces gtk só com drag and drop.
+    - O unico ponto que deu mais trabalho a conseguir gerir foram as caixas de layout que são utilizadas para definir a posição dos widgets.
+
+## Aplicação de Notas - Swing
+### Apresentação
+\begincols{}
+\column{0.60\textwidth}
+
+* Criado em 1997 pela Sun Microsystems e pela Netscape Communications Corporation
+* Implementado em Java
+* Procura ser uma alternativa lightweight em relação ao java AWT
+* Desenha os próprios widgets sem utilizar os do sistema
+
+\column{0.38\textwidth}
+![Java logo](images/java_logo.jpg)
+
+\stopcols
+
+---
+
+### Resultado
+
+\begincols{}
+
+\column{0.49\textwidth}
+![Swing Notas](images/swing_notes.png)
+
+\column{0.49\textwidth}
+![Swing Notas](images/swing_notes2.png)
+
+\stopcols
+
+---
+
+### Avaliação
+* Utilização de memória RAM - 55.60MB
+* Plataformas Suportadas - Platform-Independent
+* Simplicidade de implementação:
+    - Documentação nos standards do java mas sem pesquisa rápida.
+    - Escassos exemplos de utilização.
+    - Utilização simples permite posicionamento usando layouts e posicionamento directo na frame.
+
+## Aplicação de Notas - FLTK
+### Apresentação
+
+\begincols{}
+\column{0.60\textwidth}
+
+* Criado em 1998
+* Implementado em C++
+* Usa um design mais leve e restringe-se apenas à funcionalidade de GUI
+* Normalmente linkado de forma estática
+
+\column{0.38\textwidth}
+![FLTK logo](images/fltk_logo.gif)
+
+\stopcols
+
+---
+
+### Resultado
+
+\begincols{}
+
+\column{0.49\textwidth}
+![FLTK Notas](images/fltk_notes.png)
+
+\column{0.49\textwidth}
+![FLTK Notas](images/fltk_notes2.png)
+
+\stopcols
+
+---
+
+### Avaliação
+
+* Utilização de memória RAM - 9.84MB
+* Plataformas Suportadas - GNU/Linux, Unix, Windows, macOS, AmigaOS 4
+* Simplicidade de implementação:
+    - O desenho de elementos na interface foi simples de começar pois utiliza uma abordagem simples de desenhar directamente nas posições
+    - A gestão de linhas e margens precisou de calculos manuais o que faz com que a aplicação seja mais trabalhosa de mudar de ajustar a escala quando for necessário
+    - A documentação tem todos os widgets bem documentados e eles abordam a maioria dos casos de uso 
+    - Para facilitar a implementação pode ser utilizada a ferramenta FLUID que permite construir a interface com drag and drop
+
+## Estimativas de Outros Casos
+
+### Electron
+### QT
+### .NET
+
+# Outras Alternativas para Testar
+
+##
+* 
 
 # Comparação de resultados
+    # Ações possiveis
+    ## Como developers o que podemos fazer
+
+    * Podemos tentar reduzir o consumo de recursos da nossas aplicações
+    * Perceber realmente que funcionalidades vamos utilizar do toolkit gráfico, de modo a podermos selecionar algo mais leve que permita a mesma funcionalidade
+
+    ---
+
+    * Versão command line da aplicação
 
 # Conclusões
+
+# Motivação
+
+# Questões
