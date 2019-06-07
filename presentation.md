@@ -22,12 +22,13 @@ header-includes:
 5. Aplicação de Notas - GKT
 6. Aplicação de Notas - Swing
 7. Aplicação de Notas - FLTK
-8. Comparação de resultados
-9. Dados de outros casos
-10. Outras Alternativas
-11. Conclusões
-12. Motivação
-13. Questões
+8. Aplicação de Notas - X11 + Nuklear
+9. Comparação de resultados
+10. Dados de outros casos
+11. Outras Alternativas
+12. Conclusões
+13. Motivação
+14. Questões
 
 
 # Problema
@@ -47,10 +48,10 @@ header-includes:
 
 \column{0.49\textwidth}
 
+* 2 Motores 92RPM
 * 1GB de RAM
 * 8GB de armazenamento
 * 4× ARM Cortex-A53, 1.2GHz
-* 2 Motores 92RPM
 * Robot Tank Chasis
 
 
@@ -255,6 +256,21 @@ Consumo de RAM: 503.1MB
     - Gestão de linhas e margens precisou de calculos manuais
     - Documentação tem os widgets bem documentados e aborda a maioria dos casos de uso 
     - FLUID permite construir a interface com drag and drop
+
+
+# Aplicação de Notas - X11 + Nuklear
+## Apresentação
+
+## Resultado
+
+## Avaliação
+* Utilização de memória RAM - 26.54MB
+* Plataformas Suportadas - GNU/Linux, Unix, Windows e Mac OS X
+* Simplicidade de implementação:
+    - Widgets baseados em GtkWidget.
+    - Manual de fácil pesquisa e com boa documentação.
+    - Glade para construção de interface só com drag and drop.
+    - Trabalhoso usar as caixas de layout que são para definir posição dos widgets.
 
 
 # Comparação de resultados
