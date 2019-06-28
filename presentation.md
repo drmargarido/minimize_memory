@@ -1,6 +1,5 @@
 ---
 title: Que Stack Gráfica Escolher?
-subtitle: ENEI 2019
 author: Daniel Margarido
 date: \today
 theme: CambridgeUS
@@ -8,7 +7,7 @@ colortheme: beaver
 fontfamily: merriweather
 header-includes:
     - \let\olditem\item \renewcommand{\item}{\setlength{\itemsep}{\fill}\olditem}
-    - \newcommand{\begincols}[1]{\begin{columns}{#1}} 
+    - \newcommand{\begincols}[1]{\begin{columns}{#1}}
     - \newcommand{\stopcols}{\end{columns}}
     - \hypersetup{colorlinks=true, linkcolor=, urlcolor=blue}
 ---
@@ -82,18 +81,6 @@ Consumo de RAM: 848MB
 Consumo de RAM: 503.1MB
 ![Discord](images/discord.png)
 
-## Porque isto acontece?
-
-* Empresas procuram sempre maximizar as funcionalidades que conseguem obter com o tempo dos programadores 
-
-* "O hardware é barato"
-
-* A maioria dos programadores trabalham em sistemas relacionados com a web.
-
-* Software com muitas funcionalidades em vez de uma filosofia minimalista.
-
-* "Write programs that do one thing and do it well."
-
 
 # Foco de Análise
 
@@ -110,7 +97,7 @@ Consumo de RAM: 503.1MB
 * 40x mais RAM, temos de tentar reduzir o máximo que conseguirmos.
 
 
-# Consumos Atuais 
+# Consumos Atuais
 
 ## Metodologia
 
@@ -254,40 +241,44 @@ Consumo de RAM: 503.1MB
 * Simplicidade de implementação:
     - Desenho de elementos na interface simples
     - Gestão de linhas e margens precisou de calculos manuais
-    - Documentação tem os widgets bem documentados e aborda a maioria dos casos de uso 
+    - Documentação tem os widgets bem documentados e aborda a maioria dos casos de uso
     - FLUID permite construir a interface com drag and drop
 
 
-# Aplicação de Notas - X11 + Nuklear
+# Aplicação de Notas - Nuklear
 ## Apresentação
+* Criado em 2015
+* Implementado em ANSI C
+* Immediate mode graphical user interface toolkit
+* Zero dependências, recebe o input do estado atual e gera comandos de desenho de primitivas como output
+* Backends atuais para desenhar estas primitivas - x11, d3d9, d3d11, gdl, gdlp, glfw, sdl com opengl, sfml com opengl, allegro5
+
 
 ## Resultado
 
-## Avaliação
-* Utilização de memória RAM - 26.54MB
-* Plataformas Suportadas - GNU/Linux, Unix, Windows e Mac OS X
-* Simplicidade de implementação:
-    - Widgets baseados em GtkWidget.
-    - Manual de fácil pesquisa e com boa documentação.
-    - Glade para construção de interface só com drag and drop.
-    - Trabalhoso usar as caixas de layout que são para definir posição dos widgets.
+\begincols{}
 
+\column{0.49\textwidth}
+![Nuklear + X11 Notas](images/nuklear_x11_2.png)
+
+\column{0.49\textwidth}
+![Nuklear + X11 Notas](images/nuklear_x11.png)
+
+\stopcols
+
+## Avaliação
+* Utilização de memória RAM - 3.9MB
+* Plataformas Suportadas - Depende dos backends de render
+* Simplicidade de implementação:
+    - Utilização de contextos para desenhar demora um pouco a entender
+    - Desenho por layout e posições absolutas
+    - Documentação limitada
+    - Utilização envolve ainda alguma leitura de código para escolher backends e perceber como é a integração
 
 # Comparação de resultados
 ## Comparação
 
-\begincols{}
-
-\column{0.30\textwidth}
-![GTK](images/gtk_notes.png)
-
-\column{0.30\textwidth}
-![Swing](images/swing_notes.png)
-
-\column{0.30\textwidth}
-![FLTK](images/fltk_notes.png)
-
-\stopcols
+![Toolkits Comparison](images/toolkits_comparison.png)
 
 
 # Dados de outros casos
@@ -392,17 +383,8 @@ Consumo de RAM: 503.1MB
 
 ## Futuro
 
-* Melhorar o software das empresas
 * Manter o raspberry como máquina de trabalho durante mais uns 5 anos
 * Não ter de trocar de hardware de 2 em 2 anos
-
-## Software Minimalista
-
-* [suckless](https://suckless.org/)
-* [ALTERNATIVES](https://github.com/mayfrost/guides/blob/master/ALTERNATIVES.md)
-* [harmful.cat-v](http://harmful.cat-v.org/software/)
-* [Luke Smith](https://lukesmith.xyz/programs.html)
-* [Linux Rice](https://wiki.installgentoo.com/index.php/GNU/Linux_ricing)
 
 
 # Questões
@@ -414,16 +396,16 @@ Consumo de RAM: 503.1MB
 
 \column{0.64\textwidth}
 
-* Email: 
+* Email:
 	- drmargarido@gmail.com
-* Apresentação: 
+* Apresentação:
 	- [https://github.com/drmargarido/minimize_memory](https://github.com/drmargarido/minimize_memory)
 
-* Github: 
+* Github:
 	- [https://github.com/drmargarido](https://github.com/drmargarido)
-* Bitbucket: 
+* Bitbucket:
 	- [https://bitbucket.org/Alface0/](https://bitbucket.org/Alface0/)
-* Itch.io: 
+* Itch.io:
 	- [https://drmargarido.itch.io/](https://drmargarido.itch.io/)
 
 \column{0.35\textwidth}
