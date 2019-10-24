@@ -211,12 +211,12 @@ clean:
 @s Results
 
 ### Obtained Interface
-
+![Swing Notes](images/swing_notes.png)
 
 ### Evaluation
 <br />
-**RAM Usage** - 
+**RAM Usage** - 55.60MB
 <br />
-**Implementation Dificulty** -
+**Implementation Dificulty** - Swing documentation is somewhat difficult no navigate. Swing didn’t had much examples to follow.
 <br />
-**Supported Platforms** -
+**Supported Platforms** - All platforms where the JVM runs.
